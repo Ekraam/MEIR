@@ -1,4 +1,4 @@
-# MEIR
+# MEIR - Multimodal Entity Image Repurposing
 
 Project code for paper:
 Deep Multimodal Image-Repurposing Detection
