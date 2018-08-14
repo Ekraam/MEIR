@@ -1,3 +1,10 @@
+# TODO: Remove resnet from cnn
+# TODO: incorporate forget gate in build_model()
+# TODO: include all necessary keras functions
+# TODO: change number of frames in attention_model() to timesteps
+
+import keras
+
 def cnn_model(model):
     
     # image feature extraction
@@ -97,3 +104,44 @@ def assimilation_model(final_feature_dim):
     model = Model([pack2_feature, pack1_feature], [final_decision])
 
     return model
+
+def build_model(image_dim, timesteps, text_dim, location_dim, attention, forget_gate):
+
+    q_image_input = Input(shape=(image_dim,))
+    r_image_input = Input(shape=(image_dim,))
+
+    if attention:
+        q_text_input = Input(shape=(timesteps,text_dim))
+        r_text_input = Input(shape=(timesteps,text_dim))
+    else:
+        q_text_input = Input(shape=(text_dim,))
+        r_text_input = Input(shape=(text_dim,))
+
+    q_location_input = Input(shape=(location_dim,))
+    r_location_input = Input(shape=(location_dim,))
+
+    attention = attention_model()
+    pkg_emb = package_model()
+    pack2 = conditional_model()
+    categorical_decision = conditional_decision()
+    pack1 = pack1_model()
+    final = assimilation_model()
+
+    if attention:
+        q_text_feat = attention(q_text_input)
+        r_text_feat = attention(r_text_input)
+        q_pkg_emb = pkg_emb([q_image_input, q_text_feat, q_location_input])
+        r_pkg_emb = pkg_emb([r_image_input, r_text_feat, r_location_input])
+    else:
+        q_pkg_emb = pkg_emb([q_image_input, q_text_input, q_location_input])
+        r_pkg_emb = pkg_emb([r_image_input, r_text_input, r_location_input])
+
+    pkg2_feat, relation_decision = pack2([q_pkg_emb, r_pkg_emb])
+    pkg2_decision = categorical_decision([pkg2_feat])
+    pkg1_feat, pkg1_decision = pack1([q_pkg_emb])
+
+    decision = final([pkg2_feat, pkg1_feat])
+
+    detection_model = Model([q_image_input, q_text_input, q_location_input, r_image_input, r_text_input, r_location_input], [decision, relation_decision, pkg2_decision, pkg1_decision])
+
+    return detection_model
