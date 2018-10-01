@@ -2,9 +2,20 @@
 
 This repository releases dataset for paper:  
 **[Deep Multimodal Image-Repurposing Detection](https://arxiv.org/abs/1808.06686)**  
+Ekraam Sabir, Wael AbdAlmageed, Yue Wu and Prem Natarajan  
 presented at [ACM Multimedia 2018](http://www.acmmm.org/2018/) (orals)  
 
 It also includes code for the multitask model in paper.
+
+If you find this work useful please cite:
+
+```
+@inproceedings{meir,
+title={Deep Multimodal Image-Repurposing Detection},
+author={Sabir, Ekraam and AbdAlmageed, Wael and Wu, Yue and Natarajan, Prem},
+booktitle={Proceedings of the 2018 ACM on Multimedia Conference}
+year={2018}
+```
 
 ## Dataset
 
