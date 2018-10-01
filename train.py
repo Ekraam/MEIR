@@ -12,7 +12,7 @@ parser.add_argument(
 )
 parser.add_argument(
     '-f', '--forget_gate', action='store_true',
-    help='whether to include learnable forget gate in model [Default: medifor]'
+    help='whether to include learnable forget gate in model [Default: True]'
 )
 parser.add_argument(
     '-e', '--epochs', type=int, default=50,
@@ -23,8 +23,20 @@ parser.add_argument(
     help='number of samples in each mini batch [Default: 32]'
 )
 parser.add_argument(
-    '-p', '--data_path', default='data',
-    help='number of samples in each mini batch [Default: data]'
+    '-dp', '--data_path', default='dataset',
+    help='path where dataset resides [Default: dataset]'
+)
+parser.add_argument(
+    '-fp', '--feature_path', default='extracted_features',
+    help='path where extracted features are located [Default: extracted_features]'
+)
+parser.add_argument(
+    '-ef', '--extract_features', action='store_true',
+    help='To extract features [Default: True]'
+)
+parser.add_argument(
+    '-wp', '--w2v_path', default='models',
+    help='path where w2v model is stored [Default: models]'
 )
 
 args = parser.parse_args()
@@ -35,6 +47,20 @@ image_dim = 4096
 timesteps = 50
 text_dim = 300
 location_dim = 2
+
+# run feature extraction
+if args.extract_features:
+    # train
+    process_images()
+    process_text('train', args.data_path, args.feature_path, args.w2v_path, args.attention, timesteps, text_dim)
+    process_location('train', args.data_path, args.feature_path)
+    process_gt('train')
+
+    # dev
+    process_images()
+    process_text('dev', args.data_path, args.feature_path, args.w2v_path, args.attention, timesteps, text_dim)
+    process_location('dev', args.data_path, args.feature_path)
+    process_gt('dev')
 
 # data loader
 train_samples, train_image_feat, ref_image_feat, train_text_feat, ref_text_feat, train_location_feat, ref_location_feat, train_max_idxs, train_labels, train_relation = data.data_loader('train', args.data_path, args.attention)

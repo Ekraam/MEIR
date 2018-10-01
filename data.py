@@ -214,6 +214,6 @@ def process_location(split, data_path, feature_path):
     else:
         np.save(os.path.join(feature_path, 'man_'+split+'_location_processed.npy'), processed_location)
 
-def process_gt():
+def process_gt(split):
 
     return 1
